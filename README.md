@@ -1,4 +1,4 @@
-# Notion Bible Import
+# Obsidian Bible Import
 
 ## Resources
 
