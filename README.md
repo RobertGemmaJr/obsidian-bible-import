@@ -10,19 +10,24 @@ The source files bibles included in this project were downloaded from the web. E
 
 ## Source Data
 
-### `bibles_json_6`
+### Bible Super Search
 
-Export of all bible versions from [Bible Super Search](https://www.biblesupersearch.com/bible-downloads/) as `.json` files. This includes all languages.
+#### Folders
 
-### `bibles_sqlite_6`
+- [bibles_json_6](./Bibles/bibles_json_6/): Export of all bible versions from [Bible Super Search](https://www.biblesupersearch.com/bible-downloads/) as `.json` files. This includes all languages.
+- [bibles_sqlite_6](./Bibles/bibles_sqlite_6/): Export of all bible versions from [Bible Super Search](https://www.biblesupersearch.com/bible-downloads/) as `.sqlite` files. This includes all languages.
+- [EN-English](./Bibles/EN-English/): Export of all **English** bible versions from [Bible Super Search](https://www.biblesupersearch.com/bible-downloads/) as `.csv` files. Note that these are the same versions as the `EN-English` subfolders in `bibles_json_6` and `bibles_sqlite_6`, but in `.csv`.
 
-Export of all bible versions from [Bible Super Search](https://www.biblesupersearch.com/bible-downloads/) as `.sqlite` files. This includes all languages.
+#### Folder Structure
 
-## EN-English/
+- Extras: Some additionally relevant data for the project including
+  - A list of books in cotrnological order, name, and several matching short names
+  - A list of languages in the project (e.g. the subfolders) and some information about each
+  - A list of potential shortcuts / common references for books of the bible.
+    - *These are useful categorizations we could add to each book*
+  - A list of strongs definitions
 
-Export of all **English** bible versions from [Bible Super Search](https://www.biblesupersearch.com/bible-downloads/) as `.csv` files. Note that these are the same versions as the `EN-English` subfolders in `bibles_json_6` and `bibles_sqlite_6`, but in `.csv`.
-
-## Other
+### Other
 
 - [14-in-1-bibles.xlsx](./14-in-1-bibles.xlsx): Excel file with 14 bible versions in one sheet. Downloaded from [Open Bible](https://openbible.com/). It contains:
   - Verse
