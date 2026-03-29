@@ -1,5 +1,12 @@
+# Python
+__pypackages__/
+__pycache__/
+
 # IDE
 .vscode/
 
-# Data
+# Source Data
 *.zip
+
+# Database
+data/
