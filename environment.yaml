@@ -6,3 +6,7 @@ dependencies:
   - pip
   - setuptools
   - wheel
+  - pip:
+    - pandas
+    - openpyxl
+    - sqlalchemy
