@@ -10,3 +10,4 @@ dependencies:
     - pandas
     - openpyxl
     - sqlalchemy
+    - sqlmodel
