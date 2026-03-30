@@ -1,6 +1,7 @@
 # Python
 __pypackages__/
 __pycache__/
+.ruff_cache/
 
 # IDE
 .vscode/
