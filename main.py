@@ -1,5 +1,5 @@
 from src.database import reset_db
-from src.readers import read_bible_books, read_esv_bible
+from src.readers import read_bible_books, read_esv_bible, read_niv_bible
 
 
 def main():
@@ -8,6 +8,7 @@ def main():
     print("-------------------- READING SOURCE DATA --------------------")
     read_bible_books()
     read_esv_bible()
+    read_niv_bible()
     print("Done")
 
 
