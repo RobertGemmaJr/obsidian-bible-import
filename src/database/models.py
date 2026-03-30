@@ -1,26 +1,29 @@
 import uuid
 import json
 
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import SQLModel, Field, Relationship, UniqueConstraint
 from typing import Optional
 
-import enum
 
+class Translation(SQLModel, table=True):
+    """Represents a complete translation of the Bible."""
 
-class Translation(str, enum.Enum):
-    """Supported bible translation"""
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    abbreviation: str = Field(index=True, unique=True)
+    name: str = Field(index=True, unique=True)
 
-    ESV = "ESV"
+    # Relations
+    verses: list["Verse"] = Relationship(back_populates="translation")
 
 
 class Book(SQLModel, table=True):
     """Represents a Bible book record."""
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    canonical_order: int
-    chronological_order: int
-    name: str = Field(index=True)
-    short_name: str = Field(index=True)
+    canonical_order: int = Field(index=True, unique=True)
+    chronological_order: int = Field(unique=True)
+    name: str = Field(index=True, unique=True)
+    short_name: str = Field(index=True, unique=True)
     num_chapters: int
 
     # Relations
@@ -38,14 +41,20 @@ class Book(SQLModel, table=True):
         self.matching_names = json.dumps(names)
 
 
-class Verse:
+class Verse(SQLModel, table=True):
+    __table_args__ = (
+        # Each verse number is unique per translation
+        UniqueConstraint("translation_id", "book_id", "chapter_num", "verse_num"),
+    )
+
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    translation: Translation
     chapter_num: int
     verse_num: int
     text: str = Field(index=True)
     comment: Optional[int]
 
     # Relations
-    book_id: int = Field(default=None, foreign_key="book.id")
+    book_id: uuid.UUID = Field(default=None, foreign_key="book.id")
     book: Book = Relationship(back_populates="verses")
+    translation_id: uuid.UUID = Field(default=None, foreign_key="translation.id")
+    translation: Translation = Relationship(back_populates="verses")

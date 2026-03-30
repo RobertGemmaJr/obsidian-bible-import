@@ -8,7 +8,7 @@ bible_books = BIBLES_PATH / "Bible Books.json"
 books_en = BIBLES_PATH / "bibles_json_6" / "Extras" / "books_en.json"
 
 
-def create_bible_books():
+def read_bible_books():
     print("Reading bible books file into the database:", bible_books)
     print("Reading bible books file into the database:", books_en)
 
@@ -30,13 +30,14 @@ def create_bible_books():
                 print(f"  Warning: ID Mismatch: {book_id}")
                 continue
 
+            # Add the row
             session.add(
                 Book(
                     canonical_order=book_id,
-                    chronological_order=book["chronorder"],
-                    name=book["name"],
-                    num_chapters=book["chapters"],
-                    short_name=book_en["shortname"],
+                    chronological_order=book.get("chronorder"),
+                    name=book.get("name"),
+                    num_chapters=book.get("chapters"),
+                    short_name=book_en.get("shortname"),
                     matching_names=build_matching_names(book_en),
                 )
             )
@@ -49,11 +50,8 @@ def build_matching_names(book_en: dict) -> str:
     # NOTE @RobertGemmaJr: Some of these fields are separated by space
     # NOTE @RobertGemmaJr: We flatten all possible matches into a single string array
     names = []
-    if book_en["shortname"]:
-        names.extend(book_en["shortname"].split(" "))
-    if book_en["matching1"]:
-        names.extend(book_en["matching1"].split(" "))
-    if book_en["matching2"]:
-        names.extend(book_en["matching2"].split(" "))
+    names.extend((book_en.get("shortname") or "").split())
+    names.extend((book_en.get("matching1") or "").split())
+    names.extend((book_en.get("matching2") or "").split())
 
     return json.dumps(names)
