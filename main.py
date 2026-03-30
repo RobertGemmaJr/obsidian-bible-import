@@ -1,8 +1,12 @@
-from src.database import create_db_and_tables
+from src.database import reset_db
+from src.readers import create_bible_books
 
 
 def main():
-    create_db_and_tables()
+    reset_db()
+
+    print("-------------------- READING SOURCE DATA --------------------")
+    create_bible_books()
     print("Done")
 
 
