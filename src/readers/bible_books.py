@@ -9,17 +9,18 @@ books_en = BIBLES_PATH / "bibles_json_6" / "Extras" / "books_en.json"
 
 
 def create_bible_books():
+    print("Reading bible books file into the database:", bible_books)
+    print("Reading bible books file into the database:", books_en)
+
     # Read the JSON file
     with open(bible_books, "r") as f:
         bible_books_data = json.load(f)
     with open(books_en, "r") as f:
         books_en_data = json.load(f)
         books_en_lookup = {book["id"]: book for book in books_en_data}
-        print(books_en_lookup)
 
     # Write to the database
     with Session(DB_ENGINE) as session:
-        print("Reading bible books file into the database:", bible_books)
         for book in bible_books_data:
             # Look up the json objects based on the base ID
             book_id = book["bookid"]
@@ -28,7 +29,6 @@ def create_bible_books():
             if book_en is None:
                 print(f"  Warning: ID Mismatch: {book_id}")
                 continue
-            print("Adding book:", book["name"])
 
             session.add(
                 Book(
