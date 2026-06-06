@@ -17,6 +17,7 @@ def read_esv_bible():
     # Write to the database
     with Session(DB_ENGINE) as session:
         # Create the translation
+        # TODO #10: Figure out and add the year to the translation?
         translation = Translation(abbreviation="ESV", name="English Standard Version")
         session.add(translation)
         session.flush()

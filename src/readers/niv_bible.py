@@ -18,7 +18,7 @@ def read_niv_bible():
     # Write to the database
     with Session(DB_ENGINE) as session:
         # Create the translation
-        # TODO: Figure out and add the year to the translation?
+        # TODO #10: Figure out and add the year to the translation?
         translation = Translation(abbreviation="NIV", name="New International Version")
         session.add(translation)
         session.flush()
@@ -33,9 +33,9 @@ def read_niv_bible():
                 continue
 
             # Add the row
-            # TODO: The NIV bible includes the headings
-            # TODO: e.g., "The Beginning<br/>In the beginning God created the heavens and the earth."
-            # TODO: We should strip those from the data
+            # TODO #9: The NIV bible includes the headings
+            # TODO #9: e.g., "The Beginning<br/>In the beginning God created the heavens and the earth."
+            # TODO #9: We should strip those from the data
             session.add(
                 Verse(
                     chapter_num=verse.get("chapter"),
