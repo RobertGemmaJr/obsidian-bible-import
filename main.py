@@ -1,5 +1,6 @@
 from src.database import reset_db
 from src.readers import read_bible_books, read_esv_bible, read_niv_bible
+from src.writer import write_obsidian_markdown
 
 
 def main():
@@ -9,6 +10,7 @@ def main():
     read_bible_books()
     read_esv_bible()
     read_niv_bible()
+    write_obsidian_markdown()
     print("Done")
 
 

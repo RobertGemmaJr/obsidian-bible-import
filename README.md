@@ -1,5 +1,19 @@
 # Obsidian Bible Import
 
+## Usage
+
+### Environment Setup
+
+```sh
+conda activate obsidian-bible-import
+```
+
+### Running the Program
+
+```sh
+python main.py
+```
+
 ## Resources
 
 The source files bibles included in this project were downloaded from the web. Each project includes additional resources that are helpful but not a part of this repository.
