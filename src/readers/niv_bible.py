@@ -2,7 +2,7 @@ from sqlmodel import Session, select
 import json
 
 from src.database import DB_ENGINE, Book, Translation, Verse
-from src.constants import BIBLES_PATH
+from src.common import BIBLES_PATH
 
 
 niv_bible = BIBLES_PATH / "NIV Bible.json"

@@ -2,8 +2,7 @@ from sqlmodel import Session, select
 import sqlite3
 
 from src.database import DB_ENGINE, Book, Translation, Verse
-from src.constants import BIBLES_PATH
-from src.utils import to_bool, to_int
+from src.common import BIBLES_PATH, to_bool, to_int
 
 
 web_bible = BIBLES_PATH / "bibles_sqlite_6" / "EN-English" / "web.sqlite"

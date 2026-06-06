@@ -2,7 +2,7 @@ from sqlmodel import Session
 import json
 
 from src.database import DB_ENGINE, Book
-from src.constants import BIBLES_PATH
+from src.common import BIBLES_PATH
 
 bible_books = BIBLES_PATH / "Bible Books.json"
 books_en = BIBLES_PATH / "bibles_json_6" / "Extras" / "books_en.json"
