@@ -1,7 +1,7 @@
-from sqlmodel import Session, select
+from sqlmodel import Session
 import json
 
-from src.database import DB_ENGINE, Book, Translation, Verse
+from src.database import DB_ENGINE, Translation, Verse, load_books_by_canonical_order
 from src.common import BIBLES_PATH
 
 esv_bible = BIBLES_PATH / "ESV Bible.json"
@@ -35,10 +35,13 @@ def read_esv_bible():
         session.add(translation)
         session.flush()
 
+        # Pre-load Book rows
+        books_by_canonical_order = load_books_by_canonical_order(session)
+
         # Create the verses
         for verse in esv_bible_data:
             # Look up the related bible book
-            book = session.exec(select(Book).where(Book.canonical_order == verse["book"])).one_or_none()
+            book = books_by_canonical_order.get(verse["book"])
 
             if book is None:
                 print(f"  Warning: No matching book for verse {verse['pk']}")
