@@ -36,6 +36,8 @@ def write_verses(output_path: Path = verses_path) -> None:
         if key not in grouped_verses:
             grouped_verses[key] = {
                 "book_name": book.name,
+                "book_short_name": book.short_name,
+                "book_matching_names": book.get_matching_names(),
                 "book_order": book.canonical_order,
                 "chapter": verse.chapter_num,
                 "verse": verse.verse_num,
@@ -53,33 +55,64 @@ def write_verses(output_path: Path = verses_path) -> None:
         book_name = grouped["book_name"]
         chapter = grouped["chapter"]
         verse_num = grouped["verse"]
-        reference = f"{book_name} {chapter}:{verse_num}"
 
         chapter_dir = output_path / book_name / str(chapter)
         chapter_dir.mkdir(parents=True, exist_ok=True)
 
         file_path = chapter_dir / f"{book_name} {chapter}-{verse_num}.md"
-        file_path.write_text(_render_markdown(grouped, reference), encoding="utf-8")
+        file_path.write_text(_render_markdown(grouped), encoding="utf-8")
 
     print(f"Wrote {len(grouped_verses)} verse files to: {output_path}")
 
 
-def _render_markdown(grouped: dict, reference: str) -> str:
+def _build_aliases(grouped: dict) -> list[str]:
+    """Build a deduplicated list of alias references for a verse.
+
+    The first alias uses the full book name (e.g. "Genesis 1:1") and is also
+    used as the H1 heading. Additional aliases are derived from the book's
+    short name and any matching names (e.g. "Gen 1:1", "Gn 1:1").
+    """
+    chapter = grouped["chapter"]
+    verse_num = grouped["verse"]
+
+    name_candidates: list[str] = [grouped["book_name"], grouped["book_short_name"]]
+    name_candidates.extend(grouped.get("book_matching_names") or [])
+
+    aliases: list[str] = []
+    seen: set[str] = set()
+    for name in name_candidates:
+        if not name:
+            continue
+        ref = f"{name} {chapter}:{verse_num}"
+        if ref in seen:
+            continue
+        seen.add(ref)
+        aliases.append(ref)
+
+    return aliases
+
+
+def _render_markdown(grouped: dict) -> str:
     order = {abbr: i for i, abbr in enumerate(SUPPORTED_TRANSLATIONS)}
     translations = sorted(
         grouped["translations"],
         key=lambda t: order.get(t["abbreviation"], len(order)),
     )
 
+    aliases = _build_aliases(grouped)
+    reference = aliases[0]
+
     lines = [
         "---",
-        f"reference: {yaml_quote(reference)}",
         f"book: {yaml_quote(grouped['book_name'])}",
         f"book_order: {grouped['book_order']}",
         f"chapter: {grouped['chapter']}",
         f"verse: {grouped['verse']}",
-        "translations:",
+        "aliases:",
     ]
+    for alias in aliases:
+        lines.append(f"  - {yaml_quote(alias)}")
+    lines += ["translations:"]
     for item in translations:
         lines.append(f'  - "[[{item["abbreviation"]}]]"')
     lines += [
