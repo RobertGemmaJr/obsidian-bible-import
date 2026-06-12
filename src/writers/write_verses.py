@@ -1,19 +1,22 @@
 from __future__ import annotations
 
-import html
-import re
 from pathlib import Path
 
 from sqlmodel import Session, select
 
+from src.common import (
+    OUTPUT_PATH,
+    SUPPORTED_TRANSLATIONS,
+    clean_text,
+    yaml_quote,
+)
 from src.database import DB_ENGINE, Book, Translation, Verse
-from src.constants import ROOT_PATH
 
 
-OUTPUT_PATH = ROOT_PATH / "output"
+verses_path = OUTPUT_PATH / "Bible Verses"
 
 
-def write_obsidian_markdown(output_path: Path = OUTPUT_PATH) -> None:
+def write_verses(output_path: Path = verses_path) -> None:
     """Export one markdown file per verse with all translations included."""
     output_path.mkdir(parents=True, exist_ok=True)
 
@@ -42,7 +45,7 @@ def write_obsidian_markdown(output_path: Path = OUTPUT_PATH) -> None:
         grouped_verses[key]["translations"].append(
             {
                 "abbreviation": translation.abbreviation,
-                "text": _clean_text(verse.text),
+                "text": clean_text(verse.text),
             }
         )
 
@@ -61,26 +64,18 @@ def write_obsidian_markdown(output_path: Path = OUTPUT_PATH) -> None:
     print(f"Wrote {len(grouped_verses)} verse files to: {output_path}")
 
 
-def _clean_text(text: str) -> str:
-    cleaned = text.replace("<br/>", "\n").replace("<br>", "\n")
-    cleaned = re.sub(r"<[^>]+>", "", cleaned)
-    cleaned = html.unescape(cleaned)
-    return cleaned.strip()
-
-
-def _yaml_quote(value: str) -> str:
-    escaped = value.replace("\\", "\\\\").replace('"', '\\"')
-    return f'"{escaped}"'
-
-
 def _render_markdown(grouped: dict, reference: str) -> str:
-    translations = grouped["translations"]
+    order = {abbr: i for i, abbr in enumerate(SUPPORTED_TRANSLATIONS)}
+    translations = sorted(
+        grouped["translations"],
+        key=lambda t: order.get(t["abbreviation"], len(order)),
+    )
     translation_list = ", ".join(item["abbreviation"] for item in translations)
 
     lines = [
         "---",
-        f"reference: {_yaml_quote(reference)}",
-        f"book: {_yaml_quote(grouped['book_name'])}",
+        f"reference: {yaml_quote(reference)}",
+        f"book: {yaml_quote(grouped['book_name'])}",
         f"book_order: {grouped['book_order']}",
         f"chapter: {grouped['chapter']}",
         f"verse: {grouped['verse']}",

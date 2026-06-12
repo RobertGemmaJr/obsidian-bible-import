@@ -2,7 +2,9 @@
 Project-wide utility functions for obsidian-bible-import.
 """
 
+import html
 import json
+import re
 from pathlib import Path
 from typing import Any, Optional
 
@@ -28,3 +30,17 @@ def read_json(path: Path) -> Any:
     """Read and parse a JSON file."""
     with open(path, "r") as f:
         return json.load(f)
+
+
+def clean_text(text: str) -> str:
+    """Strip HTML tags and unescape entities from a verse text string."""
+    cleaned = text.replace("<br/>", "\n").replace("<br>", "\n")
+    cleaned = re.sub(r"<[^>]+>", "", cleaned)
+    cleaned = html.unescape(cleaned)
+    return cleaned.strip()
+
+
+def yaml_quote(value: str) -> str:
+    """Quote a string for safe inclusion in a YAML scalar value."""
+    escaped = value.replace("\\", "\\\\").replace('"', '\\"')
+    return f'"{escaped}"'
