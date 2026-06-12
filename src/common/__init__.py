@@ -7,7 +7,7 @@ from .constants import (
     OUTPUT_PATH,
     SUPPORTED_TRANSLATIONS,
 )
-from .utils import to_bool, to_int, read_json, clean_text, yaml_quote
+from .utils import to_bool, to_int, read_json, clean_text, yaml_quote, format_field
 
 __all__ = [
     "ROOT_PATH",
@@ -20,4 +20,5 @@ __all__ = [
     "read_json",
     "clean_text",
     "yaml_quote",
+    "format_field",
 ]

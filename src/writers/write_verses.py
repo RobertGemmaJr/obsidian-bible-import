@@ -70,7 +70,6 @@ def _render_markdown(grouped: dict, reference: str) -> str:
         grouped["translations"],
         key=lambda t: order.get(t["abbreviation"], len(order)),
     )
-    translation_list = ", ".join(item["abbreviation"] for item in translations)
 
     lines = [
         "---",
@@ -79,7 +78,11 @@ def _render_markdown(grouped: dict, reference: str) -> str:
         f"book_order: {grouped['book_order']}",
         f"chapter: {grouped['chapter']}",
         f"verse: {grouped['verse']}",
-        f"translations: [{translation_list}]",
+        "translations:",
+    ]
+    for item in translations:
+        lines.append(f'  - "[[{item["abbreviation"]}]]"')
+    lines += [
         "---",
         "",
         f"# {reference}",

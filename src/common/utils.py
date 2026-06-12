@@ -41,6 +41,18 @@ def clean_text(text: str) -> str:
 
 
 def yaml_quote(value: str) -> str:
-    """Quote a string for safe inclusion in a YAML scalar value."""
-    escaped = value.replace("\\", "\\\\").replace('"', '\\"')
+    """Quote a string for safe inclusion in a YAML double-quoted scalar."""
+    escaped = (
+        value.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
+    )
     return f'"{escaped}"'
+
+
+def format_field(name: str, value) -> str:
+    if value is None:
+        return f"{name}:"
+    if isinstance(value, bool):
+        return f"{name}: {'true' if value else 'false'}"
+    if isinstance(value, (int, float)):
+        return f"{name}: {value}"
+    return f"{name}: {yaml_quote(str(value))}"
