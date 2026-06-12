@@ -15,9 +15,33 @@ def chapter_ref(name: str, chapter: int) -> str:
     return f"{name} {chapter}"
 
 
-def verse_ref(name: str, chapter: int, verse: int) -> str:
-    """Return a verse reference string, e.g. ``"Genesis 1:1"``."""
+def verse_ref_alias(name: str, chapter: int, verse: int) -> str:
+    """Return the human-readable verse reference, e.g. ``"Genesis 1:1"``.
+
+    Suitable for headings, YAML ``aliases:`` entries, and the right-hand
+    (display) side of a piped wikilink.
+    """
     return f"{name} {chapter}:{verse}"
+
+
+def verse_ref_file(name: str, chapter: int, verse: int) -> str:
+    """Return the file-safe verse reference, e.g. ``"Genesis 1-1"``.
+
+    Matches the on-disk filename written by ``write_verses`` and is suitable
+    as the left-hand (target) side of a piped wikilink.
+    """
+    return f"{name} {chapter}-{verse}"
+
+
+def verse_ref_link(name: str, chapter: int, verse: int) -> str:
+    """Return the piped wikilink-target form, e.g. ``"Genesis 1-1|Genesis 1:1"``.
+
+    When wrapped by ``wikilink()`` (or any helper that calls it) the result
+    is ``[[Genesis 1-1|Genesis 1:1]]`` -- an Obsidian link whose target is
+    the actual file name and whose display text is the human-readable
+    reference.
+    """
+    return f"{verse_ref_file(name, chapter, verse)}|{verse_ref_alias(name, chapter, verse)}"
 
 
 def build_alias_names(
@@ -54,4 +78,4 @@ def chapter_aliases(base_names: list[str], chapter: int) -> list[str]:
 
 def verse_aliases(base_names: list[str], chapter: int, verse: int) -> list[str]:
     """Return verse alias references for each base name (e.g. ``"Gen 1:1"``)."""
-    return [verse_ref(name, chapter, verse) for name in base_names]
+    return [verse_ref_alias(name, chapter, verse) for name in base_names]

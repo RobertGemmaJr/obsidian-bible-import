@@ -14,7 +14,7 @@ from src.common import (
     heading,
     render_note,
     section,
-    verse_ref,
+    verse_ref_link,
     yaml_link_list,
     yaml_list,
 )
@@ -55,7 +55,7 @@ def write_books(output_path: Path = BOOKS_OUTPUT_PATH) -> None:
 def _render_markdown(book: Book, verses: list[tuple[int, int]]) -> str:
     base_names = build_alias_names(book.name, book.short_name, book.get_matching_names())
     chapter_refs = [chapter_ref(book.name, ch) for ch in range(1, book.num_chapters + 1)]
-    verse_refs = [verse_ref(book.name, ch, v) for ch, v in verses]
+    verse_refs = [verse_ref_link(book.name, ch, v) for ch, v in verses]
 
     return render_note([
         *frontmatter([

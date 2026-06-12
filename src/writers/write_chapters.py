@@ -17,7 +17,7 @@ from src.common import (
     heading,
     render_note,
     section,
-    verse_ref,
+    verse_ref_link,
     yaml_link_field,
     yaml_link_list,
     yaml_list,
@@ -64,7 +64,7 @@ def write_chapters(output_path: Path = CHAPTERS_OUTPUT_PATH) -> None:
 def _render_markdown(book: Book, chapter: int, verse_nums: list[int]) -> str:
     base_names = build_alias_names(book.name, book.short_name, book.get_matching_names())
     aliases = chapter_aliases(base_names, chapter)
-    verse_refs = [verse_ref(book.name, chapter, v) for v in verse_nums]
+    verse_refs = [verse_ref_link(book.name, chapter, v) for v in verse_nums]
 
     return render_note([
         *frontmatter([
