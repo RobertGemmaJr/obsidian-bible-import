@@ -2,7 +2,7 @@ from sqlmodel import Session, select
 import json
 
 from src.database import DB_ENGINE, Book, Translation, Verse
-from src.constants import BIBLES_PATH
+from src.common import BIBLES_PATH
 
 esv_bible = BIBLES_PATH / "ESV Bible.json"
 
@@ -17,8 +17,21 @@ def read_esv_bible():
     # Write to the database
     with Session(DB_ENGINE) as session:
         # Create the translation
-        # TODO #10: Figure out and add the year to the translation?
-        translation = Translation(abbreviation="ESV", name="English Standard Version")
+        translation = Translation(
+            abbreviation="ESV",
+            name="English Standard Version",
+            year="2001",
+            publisher="Crossway",
+            lang="English",
+            lang_short="en",
+            copyright=True,
+            copyright_statement=(
+                "The ESV\u00ae Bible (The Holy Bible, English Standard Version\u00ae) "
+                "copyright \u00a9 2001 by Crossway, a publishing ministry of Good News Publishers."
+            ),
+            url="https://www.esv.org/",
+            official=True,
+        )
         session.add(translation)
         session.flush()
 

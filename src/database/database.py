@@ -1,7 +1,7 @@
 import os
 
 from sqlmodel import SQLModel, create_engine
-from ..constants import DATA_PATH
+from ..common import DATA_PATH
 
 # DB Engine
 DB_FILE = DATA_PATH / "obsidian-bible-import.db"

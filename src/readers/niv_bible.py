@@ -2,7 +2,7 @@ from sqlmodel import Session, select
 import json
 
 from src.database import DB_ENGINE, Book, Translation, Verse
-from src.constants import BIBLES_PATH
+from src.common import BIBLES_PATH
 
 
 niv_bible = BIBLES_PATH / "NIV Bible.json"
@@ -18,8 +18,21 @@ def read_niv_bible():
     # Write to the database
     with Session(DB_ENGINE) as session:
         # Create the translation
-        # TODO #10: Figure out and add the year to the translation?
-        translation = Translation(abbreviation="NIV", name="New International Version")
+        translation = Translation(
+            abbreviation="NIV",
+            name="New International Version",
+            year="1978",
+            publisher="Biblica",
+            lang="English",
+            lang_short="en",
+            copyright=True,
+            copyright_statement=(
+                "Scripture quotations taken from The Holy Bible, New International Version\u00ae NIV\u00ae "
+                "Copyright \u00a9 1973, 1978, 1984, 2011 by Biblica, Inc.\u00ae"
+            ),
+            url="https://www.biblica.com/",
+            official=True,
+        )
         session.add(translation)
         session.flush()
 
