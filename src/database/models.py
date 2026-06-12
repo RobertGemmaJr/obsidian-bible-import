@@ -12,12 +12,33 @@ class Translation(SQLModel, table=True):
     abbreviation: str = Field(index=True, unique=True)
     name: str = Field(index=True, unique=True)
 
+    # Metadata (sourced from each translation's SQLite `meta` table where available)
+    module: Optional[str] = Field(default=None)
+    year: Optional[str] = Field(default=None)
+    publisher: Optional[str] = Field(default=None)
+    owner: Optional[str] = Field(default=None)
+    description: Optional[str] = Field(default=None)
+    lang: Optional[str] = Field(default=None)
+    lang_short: Optional[str] = Field(default=None)
+    copyright: Optional[bool] = Field(default=None)
+    copyright_statement: Optional[str] = Field(default=None)
+    url: Optional[str] = Field(default=None)
+    citation_limit: Optional[int] = Field(default=None)
+    restrict: Optional[bool] = Field(default=None)
+    italics: Optional[bool] = Field(default=None)
+    strongs: Optional[bool] = Field(default=None)
+    red_letter: Optional[bool] = Field(default=None)
+    paragraph: Optional[bool] = Field(default=None)
+    official: Optional[bool] = Field(default=None)
+    research: Optional[bool] = Field(default=None)
+    module_version: Optional[str] = Field(default=None)
+
     # Relations
     verses: list["Verse"] = Relationship(back_populates="translation")
 
 
 class Book(SQLModel, table=True):
-    """Represents a Bible book record."""
+    """Represents a single book of the Bible."""
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     canonical_order: int = Field(index=True, unique=True)
@@ -42,6 +63,8 @@ class Book(SQLModel, table=True):
 
 
 class Verse(SQLModel, table=True):
+    """Represents a single verse of the Bible."""
+
     __table_args__ = (
         # Each verse number is unique per translation
         UniqueConstraint("translation_id", "book_id", "chapter_num", "verse_num"),
