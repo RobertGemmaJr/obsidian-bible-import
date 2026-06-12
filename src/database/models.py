@@ -38,7 +38,7 @@ class Translation(SQLModel, table=True):
 
 
 class Book(SQLModel, table=True):
-    """Represents a Bible book record."""
+    """Represents a single book of the Bible."""
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     canonical_order: int = Field(index=True, unique=True)
@@ -63,6 +63,8 @@ class Book(SQLModel, table=True):
 
 
 class Verse(SQLModel, table=True):
+    """Represents a single verse of the Bible."""
+
     __table_args__ = (
         # Each verse number is unique per translation
         UniqueConstraint("translation_id", "book_id", "chapter_num", "verse_num"),

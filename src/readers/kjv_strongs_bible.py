@@ -1,7 +1,6 @@
-from sqlmodel import Session, select
-import sqlite3
+from sqlmodel import Session
 
-from src.database import DB_ENGINE, Book, Translation, Verse
+from src.database import DB_ENGINE, Translation, Verse, load_books_by_canonical_order, read_sqlite_translation
 from src.common import BIBLES_PATH, to_bool, to_int
 
 
@@ -12,16 +11,7 @@ def read_kjv_strongs_bible():
     print("Reading KJV Strongs Bible translation:", kjv_strongs_bible)
 
     # Read the SQLite source
-    conn = sqlite3.connect(kjv_strongs_bible)
-    try:
-        cur = conn.cursor()
-        cur.execute("SELECT field, value FROM meta;")
-        meta = dict(cur.fetchall())
-
-        cur.execute("SELECT book, chapter, verse, text FROM verses;")
-        verse_rows = cur.fetchall()
-    finally:
-        conn.close()
+    meta, verse_rows = read_sqlite_translation(kjv_strongs_bible)
 
     # Write to the database
     with Session(DB_ENGINE) as session:
@@ -52,10 +42,13 @@ def read_kjv_strongs_bible():
         session.add(translation)
         session.flush()
 
+        # Pre-load Book rows
+        books_by_canonical_order = load_books_by_canonical_order(session)
+
         # Create the verses
         for book_id, chapter_num, verse_num, text in verse_rows:
             # Look up the related bible book
-            book = session.exec(select(Book).where(Book.canonical_order == book_id)).one_or_none()
+            book = books_by_canonical_order.get(book_id)
 
             if book is None:
                 print(f"  Warning: No matching book for verse book={book_id} chapter={chapter_num} verse={verse_num}")

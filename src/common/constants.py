@@ -1,7 +1,3 @@
-"""
-Project-wide constants for obsidian-bible-import.
-"""
-
 from pathlib import Path
 
 # File Paths

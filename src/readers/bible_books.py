@@ -2,7 +2,7 @@ from sqlmodel import Session
 import json
 
 from src.database import DB_ENGINE, Book
-from src.common import BIBLES_PATH
+from src.common import BIBLES_PATH, read_json
 
 bible_books = BIBLES_PATH / "Bible Books.json"
 books_en = BIBLES_PATH / "bibles_json_6" / "Extras" / "books_en.json"
@@ -12,12 +12,10 @@ def read_bible_books():
     print("Reading bible books file into the database:", bible_books)
     print("Reading bible books file into the database:", books_en)
 
-    # Read the JSON file
-    with open(bible_books, "r") as f:
-        bible_books_data = json.load(f)
-    with open(books_en, "r") as f:
-        books_en_data = json.load(f)
-        books_en_lookup = {book["id"]: book for book in books_en_data}
+    # Read the JSON files
+    bible_books_data = read_json(bible_books)
+    books_en_data = read_json(books_en)
+    books_en_lookup = {book["id"]: book for book in books_en_data}
 
     # Write to the database
     with Session(DB_ENGINE) as session:
