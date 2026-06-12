@@ -21,3 +21,8 @@ SUPPORTED_TRANSLATIONS = [
     "Coverdale",
     "Tyndale",
 ]
+
+# Lookup of canonical sort position for each supported translation
+TRANSLATION_ORDER: dict[str, int] = {
+    abbr: i for i, abbr in enumerate(SUPPORTED_TRANSLATIONS)
+}

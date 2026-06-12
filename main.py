@@ -1,6 +1,6 @@
 from src.database import reset_db
 from src.readers import read_bible_books, read_esv_bible, read_niv_bible
-from src.writers import write_translations, write_books, write_verses
+from src.writers import write_translations, write_books, write_chapters, write_verses
 from src.readers import (
     read_asv_bible,
     read_asvs_bible,
@@ -18,7 +18,7 @@ from src.readers import (
 def main():
     reset_db()
 
-    print("-------------------- READING SOURCE DATA --------------------")
+    print("\n-------------------- READING SOURCE DATA --------------------\n")
     read_bible_books()
     read_esv_bible()
     read_niv_bible()
@@ -33,12 +33,13 @@ def main():
     read_coverdale_bible()
     read_tyndale_bible()
 
-    print("-------------------- WRITING TARGET DATA --------------------")
+    print("\n-------------------- WRITING TARGET DATA --------------------\n")
     write_translations()
     write_books()
+    write_chapters()
     write_verses()
 
-    print("Done")
+    print("\nDone")
 
 
 if __name__ == "__main__":

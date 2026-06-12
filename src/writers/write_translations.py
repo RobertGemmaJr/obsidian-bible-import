@@ -4,13 +4,12 @@ from pathlib import Path
 
 from sqlmodel import Session, select
 
-from src.common import OUTPUT_PATH, SUPPORTED_TRANSLATIONS, format_field
+from src.common import SUPPORTED_TRANSLATIONS, OUTPUT_PATH, format_field
 from src.database import DB_ENGINE, Translation
 
+TRANSLATIONS_OUTPUT_PATH = OUTPUT_PATH / "Bible Translations"
 
-translations_output = OUTPUT_PATH / "Bible Translations"
-
-# Order matches the column definitions in src/database/models.py
+# This is the order the properties will appear in the markdown file
 _FIELDS: tuple[str, ...] = (
     "name",
     "abbreviation",
@@ -32,7 +31,10 @@ _FIELDS: tuple[str, ...] = (
 )
 
 
-def write_translations(output_path: Path = translations_output) -> None:
+TRANSLATIONS_OUTPUT_PATH = OUTPUT_PATH / "Bible Translations"
+
+
+def write_translations(output_path: Path = TRANSLATIONS_OUTPUT_PATH) -> None:
     """Export one markdown file per Bible translation (frontmatter only)."""
     output_path.mkdir(parents=True, exist_ok=True)
 

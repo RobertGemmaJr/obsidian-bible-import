@@ -6,17 +6,24 @@ from sqlmodel import Session, select
 
 from src.common import (
     OUTPUT_PATH,
-    SUPPORTED_TRANSLATIONS,
+    TRANSLATION_ORDER,
+    build_alias_names,
     clean_text,
-    yaml_quote,
+    format_field,
+    frontmatter,
+    heading,
+    render_note,
+    verse_aliases,
+    yaml_link_list,
+    yaml_list,
 )
 from src.database import DB_ENGINE, Book, Translation, Verse
 
 
-verses_path = OUTPUT_PATH / "Bible Verses"
+VERSES_OUTPUT_PATH = OUTPUT_PATH / "Bible Verses"
 
 
-def write_verses(output_path: Path = verses_path) -> None:
+def write_verses(output_path: Path = VERSES_OUTPUT_PATH) -> None:
     """Export one markdown file per verse with all translations included."""
     output_path.mkdir(parents=True, exist_ok=True)
 
@@ -65,66 +72,40 @@ def write_verses(output_path: Path = verses_path) -> None:
     print(f"Wrote {len(grouped_verses)} verse files to: {output_path}")
 
 
-def _build_aliases(grouped: dict) -> list[str]:
-    """Build a deduplicated list of alias references for a verse.
-
-    The first alias uses the full book name (e.g. "Genesis 1:1") and is also
-    used as the H1 heading. Additional aliases are derived from the book's
-    short name and any matching names (e.g. "Gen 1:1", "Gn 1:1").
-    """
-    chapter = grouped["chapter"]
-    verse_num = grouped["verse"]
-
-    name_candidates: list[str] = [grouped["book_name"], grouped["book_short_name"]]
-    name_candidates.extend(grouped.get("book_matching_names") or [])
-
-    aliases: list[str] = []
-    seen: set[str] = set()
-    for name in name_candidates:
-        if not name:
-            continue
-        ref = f"{name} {chapter}:{verse_num}"
-        if ref in seen:
-            continue
-        seen.add(ref)
-        aliases.append(ref)
-
-    return aliases
-
-
 def _render_markdown(grouped: dict) -> str:
-    order = {abbr: i for i, abbr in enumerate(SUPPORTED_TRANSLATIONS)}
     translations = sorted(
         grouped["translations"],
-        key=lambda t: order.get(t["abbreviation"], len(order)),
+        key=lambda t: TRANSLATION_ORDER.get(t["abbreviation"], len(TRANSLATION_ORDER)),
     )
+    base_names = build_alias_names(
+        grouped["book_name"],
+        grouped["book_short_name"],
+        grouped["book_matching_names"],
+    )
+    aliases = verse_aliases(base_names, grouped["chapter"], grouped["verse"])
 
-    aliases = _build_aliases(grouped)
-    reference = aliases[0]
-
-    lines = [
-        "---",
-        f"book: {yaml_quote(grouped['book_name'])}",
-        f"book_order: {grouped['book_order']}",
-        f"chapter: {grouped['chapter']}",
-        f"verse: {grouped['verse']}",
-        "aliases:",
-    ]
-    for alias in aliases:
-        lines.append(f"  - {yaml_quote(alias)}")
-    lines += ["translations:"]
-    for item in translations:
-        lines.append(f'  - "[[{item["abbreviation"]}]]"')
-    lines += [
-        "---",
+    return render_note([
+        *frontmatter([
+            *yaml_list("aliases", aliases),
+            format_field("book", grouped["book_name"]),
+            f"book_order: {grouped['book_order']}",
+            f"chapter: {grouped['chapter']}",
+            f"verse: {grouped['verse']}",
+            *yaml_link_list("translations", [t["abbreviation"] for t in translations]),
+        ]),
         "",
-        f"# {reference}",
+        heading(1, aliases[0]),
         "",
-    ]
+        *_render_translation_sections(translations),
+    ])
 
+
+def _render_translation_sections(translations: list[dict]) -> list[str]:
+    """Render each translation as an H2 followed by its verse text."""
+    lines: list[str] = []
     for item in translations:
-        lines.append(f"## {item['abbreviation']}\n")
+        lines.append(heading(2, item["abbreviation"]))
+        lines.append("")
         lines.append(item["text"])
         lines.append("")
-
-    return "\n".join(lines).rstrip() + "\n"
+    return lines
