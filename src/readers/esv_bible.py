@@ -1,8 +1,7 @@
 from sqlmodel import Session
-import json
 
 from src.database import DB_ENGINE, Translation, Verse, load_books_by_canonical_order
-from src.common import BIBLES_PATH
+from src.common import BIBLES_PATH, read_json
 
 esv_bible = BIBLES_PATH / "ESV Bible.json"
 
@@ -11,8 +10,7 @@ def read_esv_bible():
     print("Reading ESV Bible translation:", esv_bible)
 
     # Read the JSON file
-    with open(esv_bible, "r") as f:
-        esv_bible_data = json.load(f)
+    esv_bible_data = read_json(esv_bible)
 
     # Write to the database
     with Session(DB_ENGINE) as session:

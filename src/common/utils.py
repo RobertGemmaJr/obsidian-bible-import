@@ -2,7 +2,9 @@
 Project-wide utility functions for obsidian-bible-import.
 """
 
-from typing import Optional
+import json
+from pathlib import Path
+from typing import Any, Optional
 
 
 def to_bool(value) -> Optional[bool]:
@@ -20,3 +22,9 @@ def to_int(value) -> Optional[int]:
         return int(value)
     except (TypeError, ValueError):
         return None
+
+
+def read_json(path: Path) -> Any:
+    """Read and parse a JSON file."""
+    with open(path, "r") as f:
+        return json.load(f)

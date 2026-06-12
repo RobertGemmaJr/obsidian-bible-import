@@ -1,7 +1,6 @@
 from sqlmodel import Session
-import sqlite3
 
-from src.database import DB_ENGINE, Translation, Verse, load_books_by_canonical_order
+from src.database import DB_ENGINE, Translation, Verse, load_books_by_canonical_order, read_sqlite_translation
 from src.common import BIBLES_PATH, to_bool, to_int
 
 
@@ -12,16 +11,7 @@ def read_tyndale_bible():
     print("Reading Tyndale Bible translation:", tyndale_bible)
 
     # Read the SQLite source
-    conn = sqlite3.connect(tyndale_bible)
-    try:
-        cur = conn.cursor()
-        cur.execute("SELECT field, value FROM meta;")
-        meta = dict(cur.fetchall())
-
-        cur.execute("SELECT book, chapter, verse, text FROM verses;")
-        verse_rows = cur.fetchall()
-    finally:
-        conn.close()
+    meta, verse_rows = read_sqlite_translation(tyndale_bible)
 
     # Write to the database
     with Session(DB_ENGINE) as session:
