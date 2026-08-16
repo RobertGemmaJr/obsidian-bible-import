@@ -2,9 +2,13 @@
 Project-wide utility functions for obsidian-bible-import.
 """
 
+import html
 import json
+import re
 from pathlib import Path
 from typing import Any, Optional
+
+#################### CONVERTERS ####################
 
 
 def to_bool(value) -> Optional[bool]:
@@ -28,3 +32,14 @@ def read_json(path: Path) -> Any:
     """Read and parse a JSON file."""
     with open(path, "r") as f:
         return json.load(f)
+
+
+#################### CONVERTERS ####################
+
+
+def clean_text(text: str) -> str:
+    """Strip HTML tags and unescape entities from a verse text string."""
+    cleaned = text.replace("<br/>", "\n").replace("<br>", "\n")
+    cleaned = re.sub(r"<[^>]+>", "", cleaned)
+    cleaned = html.unescape(cleaned)
+    return cleaned.strip()
