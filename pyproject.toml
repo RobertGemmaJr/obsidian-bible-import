@@ -1,3 +1,23 @@
+[project]
+name = "obsidian-bible-import"
+version = "0.1.0"
+description = "Read Bible translation source files and import them into a database for Obsidian."
+requires-python = ">=3.14"
+dependencies = [
+    "pandas",
+    "openpyxl",
+    "sqlalchemy",
+    "sqlmodel",
+]
+
+[dependency-groups]
+dev = [
+    "ruff",
+]
+
+[tool.uv]
+package = false
+
 [tool.ruff]
 line-length = 120
 

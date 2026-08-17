@@ -4,14 +4,16 @@
 
 ### Environment Setup
 
+This project uses [uv](https://docs.astral.sh/uv/) for environment and dependency management. Install the dependencies (creates a `.venv` automatically) with:
+
 ```sh
-conda activate obsidian-bible-import
+uv sync
 ```
 
 ### Running the Program
 
 ```sh
-python main.py
+uv run main.py
 ```
 
 ## Resources
