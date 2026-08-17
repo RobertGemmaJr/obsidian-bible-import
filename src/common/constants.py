@@ -6,8 +6,7 @@ DATA_PATH = ROOT_PATH / "data"
 BIBLES_PATH = ROOT_PATH / "Bibles"
 
 
-# OUTPUT_PATH = ROOT_PATH / "output"
-OUTPUT_PATH = Path("/mnt/c/users/gemr1/Synology/SynologyDrive/Documents/Obsidian Vault")
+OUTPUT_PATH = ROOT_PATH / "output"
 
 # Bible metadata
 SUPPORTED_TRANSLATIONS = [
