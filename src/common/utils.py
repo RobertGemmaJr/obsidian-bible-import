@@ -24,7 +24,7 @@ def to_int(value) -> Optional[int]:
         return None
     try:
         return int(value)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return None
 
 

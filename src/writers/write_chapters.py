@@ -66,17 +66,21 @@ def _render_markdown(book: Book, chapter: int, verse_nums: list[int]) -> str:
     aliases = chapter_aliases(base_names, chapter)
     verse_refs = [verse_ref_link(book.name, chapter, v) for v in verse_nums]
 
-    return render_note([
-        *frontmatter([
-            yaml_link_field("book", book_ref(book.name)),
-            f"book_order: {book.canonical_order}",
-            f"chapter: {chapter}",
-            f"num_verses: {len(verse_nums)}",
-            *yaml_list("aliases", aliases),
-            *yaml_link_list("verses", verse_refs),
-        ]),
-        "",
-        heading(1, chapter_ref(book.name, chapter)),
-        *section("Book", [bullet_link(book_ref(book.name))]),
-        *section("Verses", bullet_links(verse_refs)),
-    ])
+    return render_note(
+        [
+            *frontmatter(
+                [
+                    yaml_link_field("book", book_ref(book.name)),
+                    f"book_order: {book.canonical_order}",
+                    f"chapter: {chapter}",
+                    f"num_verses: {len(verse_nums)}",
+                    *yaml_list("aliases", aliases),
+                    *yaml_link_list("verses", verse_refs),
+                ]
+            ),
+            "",
+            heading(1, chapter_ref(book.name, chapter)),
+            *section("Book", [bullet_link(book_ref(book.name))]),
+            *section("Verses", bullet_links(verse_refs)),
+        ]
+    )

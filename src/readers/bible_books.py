@@ -9,9 +9,7 @@ books_en = BIBLES_PATH / "bibles_json_6" / "Extras" / "books_en.json"
 
 
 # Prefix tokens that introduce a multi-word book name (e.g. "1 Sm", "First Samuel").
-NAME_PREFIXES = frozenset(
-    {"1", "2", "3", "I", "II", "III", "1st", "2nd", "3rd", "First", "Second", "Third"}
-)
+NAME_PREFIXES = frozenset({"1", "2", "3", "I", "II", "III", "1st", "2nd", "3rd", "First", "Second", "Third"})
 
 # Connective tokens that bind a previous and following token into one entry
 # (e.g. "Song of Songs", "Canticle of Canticles").
