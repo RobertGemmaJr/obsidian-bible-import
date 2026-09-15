@@ -57,16 +57,20 @@ def _render_markdown(book: Book, verses: list[tuple[int, int]]) -> str:
     chapter_refs = [chapter_ref(book.name, ch) for ch in range(1, book.num_chapters + 1)]
     verse_refs = [verse_ref_link(book.name, ch, v) for ch, v in verses]
 
-    return render_note([
-        *frontmatter([
-            *yaml_list("aliases", base_names),
-            f"book_order: {book.canonical_order}",
-            f"num_chapters: {book.num_chapters}",
-            *yaml_link_list("chapters", chapter_refs),
-            *yaml_link_list("verses", verse_refs),
-        ]),
-        "",
-        heading(1, book.name),
-        *section("Chapters", bullet_links(chapter_refs)),
-        *section("Verses", bullet_links(verse_refs)),
-    ])
+    return render_note(
+        [
+            *frontmatter(
+                [
+                    *yaml_list("aliases", base_names),
+                    f"book_order: {book.canonical_order}",
+                    f"num_chapters: {book.num_chapters}",
+                    *yaml_link_list("chapters", chapter_refs),
+                    *yaml_link_list("verses", verse_refs),
+                ]
+            ),
+            "",
+            heading(1, book.name),
+            *section("Chapters", bullet_links(chapter_refs)),
+            *section("Verses", bullet_links(verse_refs)),
+        ]
+    )

@@ -84,20 +84,24 @@ def _render_markdown(grouped: dict) -> str:
     )
     aliases = verse_aliases(base_names, grouped["chapter"], grouped["verse"])
 
-    return render_note([
-        *frontmatter([
-            *yaml_list("aliases", aliases),
-            format_field("book", grouped["book_name"]),
-            f"book_order: {grouped['book_order']}",
-            f"chapter: {grouped['chapter']}",
-            f"verse: {grouped['verse']}",
-            *yaml_link_list("translations", [t["abbreviation"] for t in translations]),
-        ]),
-        "",
-        heading(1, aliases[0]),
-        "",
-        *_render_translation_sections(translations),
-    ])
+    return render_note(
+        [
+            *frontmatter(
+                [
+                    *yaml_list("aliases", aliases),
+                    format_field("book", grouped["book_name"]),
+                    f"book_order: {grouped['book_order']}",
+                    f"chapter: {grouped['chapter']}",
+                    f"verse: {grouped['verse']}",
+                    *yaml_link_list("translations", [t["abbreviation"] for t in translations]),
+                ]
+            ),
+            "",
+            heading(1, aliases[0]),
+            "",
+            *_render_translation_sections(translations),
+        ]
+    )
 
 
 def _render_translation_sections(translations: list[dict]) -> list[str]:
