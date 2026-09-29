@@ -1,5 +1,7 @@
+import uuid
 from pathlib import Path
 
+from sqlalchemy import insert
 from sqlmodel import Session
 
 from src.database import DB_ENGINE, Translation, Verse, load_books_by_canonical_order, read_sqlite_translation
@@ -56,7 +58,8 @@ def read_sqlite_bible(path: Path, *, abbreviation: str, name: str) -> None:
         # Pre-load Book rows
         books_by_canonical_order = load_books_by_canonical_order(session)
 
-        # Create the verses
+        # Build the verse rows
+        verse_mappings = []
         for book_id, chapter_num, verse_num, text in verse_rows:
             # Look up the related bible book
             book = books_by_canonical_order.get(book_id)
@@ -65,17 +68,20 @@ def read_sqlite_bible(path: Path, *, abbreviation: str, name: str) -> None:
                 print(f"  Warning: No matching book for verse book={book_id} chapter={chapter_num} verse={verse_num}")
                 continue
 
-            # Add the row
-            session.add(
-                Verse(
-                    chapter_num=chapter_num,
-                    verse_num=verse_num,
-                    text=text,
-                    comment=None,
-                    book_id=book.id,
-                    translation_id=translation.id,
-                )
+            verse_mappings.append(
+                {
+                    "id": uuid.uuid4(),
+                    "chapter_num": chapter_num,
+                    "verse_num": verse_num,
+                    "text": text,
+                    "comment": None,
+                    "book_id": book.id,
+                    "translation_id": translation.id,
+                }
             )
+
+        # Bulk insert the verses
+        session.exec(insert(Verse), params=verse_mappings)
         session.commit()
 
 

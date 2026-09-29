@@ -1,3 +1,6 @@
+import uuid
+
+from sqlalchemy import insert
 from sqlmodel import Session
 
 from src.database import DB_ENGINE, Translation, Verse, load_books_by_canonical_order
@@ -36,7 +39,8 @@ def read_esv_bible():
         # Pre-load Book rows
         books_by_canonical_order = load_books_by_canonical_order(session)
 
-        # Create the verses
+        # Build the verse rows
+        verse_mappings = []
         for verse in esv_bible_data:
             # Look up the related bible book
             book = books_by_canonical_order.get(verse["book"])
@@ -45,15 +49,18 @@ def read_esv_bible():
                 print(f"  Warning: No matching book for verse {verse['pk']}")
                 continue
 
-            # Add the row
-            session.add(
-                Verse(
-                    chapter_num=verse.get("chapter"),
-                    verse_num=verse.get("verse"),
-                    text=verse.get("text"),
-                    comment=verse.get("comment"),
-                    book_id=book.id,
-                    translation_id=translation.id,
-                )
+            verse_mappings.append(
+                {
+                    "id": uuid.uuid4(),
+                    "chapter_num": verse.get("chapter"),
+                    "verse_num": verse.get("verse"),
+                    "text": verse.get("text"),
+                    "comment": verse.get("comment"),
+                    "book_id": book.id,
+                    "translation_id": translation.id,
+                }
             )
+
+        # Bulk insert the verses
+        session.exec(insert(Verse), params=verse_mappings)
         session.commit()
