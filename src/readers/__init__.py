@@ -3,8 +3,7 @@ Package for reading source data into the sqlite database.
 """
 
 from .bible_books import read_bible_books
-from .esv_bible import read_esv_bible
-from .niv_bible import read_niv_bible
+from .json_reader import read_esv_bible, read_niv_bible
 from .sqlite_reader import (
     read_asv_bible,
     read_asvs_bible,
