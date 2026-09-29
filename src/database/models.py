@@ -67,13 +67,13 @@ class Verse(SQLModel, table=True):
 
     __table_args__ = (
         # Each verse number is unique per translation
-        UniqueConstraint("translation_id", "book_id", "chapter_num", "verse_num"),
+        UniqueConstraint("book_id", "chapter_num", "verse_num", "translation_id"),
     )
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     chapter_num: int
     verse_num: int
-    text: str = Field(index=True)
+    text: str
     comment: Optional[int]
 
     # Relations
