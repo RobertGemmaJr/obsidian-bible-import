@@ -31,9 +31,6 @@ _FIELDS: tuple[str, ...] = (
 )
 
 
-TRANSLATIONS_OUTPUT_PATH = OUTPUT_PATH / "Bible Translations"
-
-
 def write_translations(output_path: Path = TRANSLATIONS_OUTPUT_PATH) -> None:
     """Export one markdown file per Bible translation (frontmatter only)."""
     output_path.mkdir(parents=True, exist_ok=True)
